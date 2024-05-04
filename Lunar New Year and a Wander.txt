@@ -1,0 +1,80 @@
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <climits>
+#include <bits/stdc++.h>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+#define int long long int
+
+// https://codeforces.com/problemset/problem/1106/D
+
+using namespace std;
+int add(int a,int b,int mod){
+    return ((a % mod) + (b % mod) ) % mod;
+}
+int sub(int a,int b,int mod){
+    return ((a % mod) - (b % mod) + mod) % mod;
+}
+int multiply(int a,int b,int mod){
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+void fileIO(void) {
+
+#ifndef ONLINE_JUDGE
+
+    freopen("Input.txt", "r", stdin);
+    freopen("Output.txt", "w", stdout);
+
+#endif
+
+}
+void fastIO(void) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+int n,m;
+vector<int>adj[200006];
+bool vis[200006];
+void bfs(){
+    int start = 1;
+    vis[start] = 1;
+    priority_queue<int,vector<int>,greater<int>>q;
+    q.push(start);
+    while (!q.empty()){
+        int u = q.top();
+        cout << u << " ";
+        q.pop();
+        for(auto e : adj[u]){
+            if(!vis[e]) {
+                q.push(e);
+                vis[e] = 1;
+            }
+        }
+    }
+}
+void solve() {
+    cin >> n>>m;
+    for(int i =0;i<m;i++){
+        int u,v;cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    bfs();
+
+}
+
+signed main() {
+    fastIO();//1 2 2 3 3 3
+    fileIO();
+    solve();
+    return 0;
+}

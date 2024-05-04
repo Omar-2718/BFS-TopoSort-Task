@@ -1,0 +1,120 @@
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <climits>
+#include <bits/stdc++.h>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+#define int long long int
+
+// https://codeforces.com/problemset/problem/1611/E1
+
+
+using namespace std;
+int add(int a,int b,int mod){
+    return ((a % mod) + (b % mod) ) % mod;
+}
+int sub(int a,int b,int mod){
+    return ((a % mod) - (b % mod) + mod) % mod;
+}
+int multiply(int a,int b,int mod){
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+void fileIO(void) {
+
+#ifndef ONLINE_JUDGE
+
+    freopen("Input.txt", "r", stdin);
+    freopen("Output.txt", "w", stdout);
+
+#endif
+
+}
+void fastIO(void) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+
+int n,k;
+vector<int>friends(200009);
+vector<int>adj[200009];
+vector<int>dis(200009);
+bool vis[200009];
+void flood(){
+    queue<int>q;
+    for(int i =0;i<k;i++){
+        q.push({friends[i]});
+        dis[friends[i]] = 0;
+        vis[friends[i]] = 1;
+    }
+    while (!q.empty()){
+        int  u = q.front();
+        q.pop();
+        for(auto e : adj[u]){
+            if(!vis[e]) {
+                vis[e] = 1;
+                dis[e] = dis[u] + 1;
+                q.push(e);
+            }
+        }
+    }
+}
+bool bfs(){
+    queue<pair<int,int>>q;
+    q.push({1,0});
+    memset(vis,0,sizeof vis);
+    vis[1] = 1;
+    while(!q.empty()){
+        pair<int,int> u = q.front();
+        q.pop();
+
+        for(auto e : adj[u.first]){
+            if(!vis[e] && u.second + 1 < dis[e]) {
+                q.push({e, u.second + 1});
+                vis[e] = 1;
+                if(adj[e].size() == 1 && adj[e][0] == u.first)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+void solve(){
+    cin >> n >> k;
+    for(int i =0;i<k;i++){
+        cin >> friends[i];
+    }
+    for(int i =0;i<n-1;i++){
+        int u,v;cin>>u>>v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    flood();
+    if(bfs()){
+        cout << "Yes\n";
+    }
+    else
+        cout << "No\n";
+
+    friends.clear();
+    dis.clear();
+    for(int i =1;i<=n;i++)
+        adj[i].clear();
+    memset(vis,0,sizeof vis);
+}
+
+signed main() {
+    fastIO();
+    fileIO();
+    int t;cin>>t;
+    while (t--)
+    solve();
+    return 0;
+}

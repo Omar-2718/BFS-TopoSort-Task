@@ -1,0 +1,93 @@
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <climits>
+#include <bits/stdc++.h>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+#define int long long int
+
+// https://www.spoj.com/problems/MAKETREE/
+
+using namespace std;
+int add(int a,int b,int mod){
+    return ((a % mod) + (b % mod) ) % mod;
+}
+int sub(int a,int b,int mod){
+    return ((a % mod) - (b % mod) + mod) % mod;
+}
+int multiply(int a,int b,int mod){
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+void fileIO(void) {
+
+#ifndef ONLINE_JUDGE
+
+    freopen("Input.txt", "r", stdin);
+    freopen("Output.txt", "w", stdout);
+
+#endif
+
+}
+void fastIO(void) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+int n,k;
+vector<int>adj[100009];
+int in_degree[100009];
+vector<int>ans;
+void topo(){
+
+    queue<int>q;
+    for(int i =1;i<=n;i++){
+        if(in_degree[i] == 0){
+            q.push(i);
+        }
+    }
+    while (!q.empty()){
+        int u = q.front();
+        ans.push_back(u);
+        q.pop();
+        for(auto e : adj[u]){
+            in_degree[e]--;
+            if(in_degree[e] == 0) {
+                q.push(e);
+            }
+        }
+    }
+}
+void solve() {
+    cin >> n >> k;
+    for(int i =1;i<=k;i++){
+        int t;cin>>t;
+        while (t--) {
+            int a;cin>>a;
+            adj[i].push_back(a);
+            in_degree[a]++;
+        }
+    }
+    topo();
+    vector<int>boss(n+1);
+    boss[ans[0]] = 0;
+    // 1 2 3 4
+    for(int i =1;i<=n;i++){
+            boss[ans[i]] = ans[i-1];
+    }
+    for(int i  = 1;i<=n;i++)
+        cout << boss[i] << '\n';
+
+}
+
+signed main() {
+    fastIO();
+    solve();
+    return 0;
+}

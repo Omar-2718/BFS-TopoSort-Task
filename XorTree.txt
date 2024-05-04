@@ -1,0 +1,108 @@
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <climits>
+#include <bits/stdc++.h>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+#define int long long int
+
+// https://codeforces.com/problemset/problem/430/C
+
+using namespace std;
+int add(int a,int b,int mod){
+    return ((a % mod) + (b % mod) ) % mod;
+}
+int sub(int a,int b,int mod){
+    return ((a % mod) - (b % mod) + mod) % mod;
+}
+int multiply(int a,int b,int mod){
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+void fileIO(void) {
+
+#ifndef ONLINE_JUDGE
+
+    freopen("Input.txt", "r", stdin);
+    freopen("Output.txt", "w", stdout);
+
+#endif
+
+}
+void fastIO(void) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+int n;
+bool target[100009],init[100009];
+vector<int>adj[100009];
+bool vis[100009];
+vector<int>ans;
+void bfs(int start){
+    queue<tuple<int,int,bool,bool>>q;
+    vis[start] = 1;
+    // 1 0   0 1
+    if(target[start] != init[start])
+        ans.push_back(start);
+    q.push({start,1,target[start] ^ init[start],0});
+    while (!q.empty()){
+        tuple u = q.front();
+        int level = get<1>(u);
+        int fo = get<2>(u),fe = get<3>(u);
+        bool flip;
+        q.pop();
+        if((level+1) % 2 == 0)
+            flip = fe;
+        else
+            flip = fo;
+        for(auto e : adj[get<0>(u)]){
+            if(!vis[e]) {
+                if (init[e] != (target[e] ^ flip)) {
+                    ans.push_back(e);
+                    if ((level + 1) % 2 == 0) {
+                        q.push({e, level + 1, fo, !fe});
+                    } else {
+                        q.push({e, level + 1, !fo, fe});
+                    }
+                } else {
+                    q.push({e, level + 1, fo, fe});
+                }
+                vis[e] = 1;
+            }
+        }
+    }
+}
+void solve() {
+    cin >> n;
+    for(int i =0;i<n-1;i++){
+        int u,v;cin>>u>>v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    for(int i =1;i<=n;i++){
+        cin >> init[i];
+    }
+    for(int i =1;i<=n;i++){
+        cin >> target[i];
+    }
+    bfs(1);
+    cout << ans.size() << '\n';
+    for(auto e : ans){
+        cout << e << '\n';
+    }
+
+}
+
+signed main() {
+    fastIO();
+    fileIO();
+    solve();
+    return 0;
+}

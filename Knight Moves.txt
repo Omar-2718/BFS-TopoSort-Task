@@ -1,0 +1,86 @@
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <climits>
+#include <bits/stdc++.h>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+#define int long long int
+
+
+//https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=24&page=show_problem&problem=380
+
+
+using namespace std;
+int add(int a,int b,int mod){
+    return ((a % mod) + (b % mod) ) % mod;
+}
+int sub(int a,int b,int mod){
+    return ((a % mod) - (b % mod) + mod) % mod;
+}
+int multiply(int a,int b,int mod){
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+void fileIO(void) {
+
+#ifndef ONLINE_JUDGE
+
+    freopen("Input.txt", "r", stdin);
+    freopen("Output.txt", "w", stdout);
+
+#endif
+
+}
+void fastIO(void) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+string a,b;
+bool vis[9][9];
+int dx[8] = {2,2,-2,-2,1,-1,1,-1};
+int dy[8] = {1,-1,1,-1,2,2,-2,-2};
+bool valid(int x,int y){
+    return x >= 1 && x <= 8 && y >= 1 && y <= 8;
+}
+int f(){
+    int sx = a[1] - '0',sy=a[0] - 'a' + 1;
+    int tx = b[1] - '0',ty=b[0] - 'a' + 1;
+    queue<tuple<int,int,int>>q;
+    q.push({sx,sy,0});
+    vis[sx][sy] = 1;
+    while (!q.empty()){
+        tuple<int,int,int>u = q.front();
+        q.pop();
+        if(get<0>(u) == tx && get<1>(u) == ty){
+            return get<2>(u);
+        }
+        for(int i = 0;i<8;i++){
+            int xx = get<0>(u)  + dx[i];
+            int yy = get<1>(u)  + dy[i];
+            if(valid(xx,yy) && !vis[xx][yy]){
+                vis[xx][yy] = 1;
+                q.push({xx,yy, get<2>(u) + 1});
+            }
+        }
+    }
+
+}
+void solve() {
+    while (cin >> a >> b){
+     cout <<"To get from " << a << " to " << b << " takes " << f() << " knight moves." << '\n';
+        memset(vis,0,sizeof vis);
+    }
+}
+
+signed main() {
+    fastIO();
+    solve();
+    return 0;
+}

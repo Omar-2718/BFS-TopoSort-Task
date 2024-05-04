@@ -1,0 +1,98 @@
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <climits>
+#include <bits/stdc++.h>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+#define int long long int
+
+// https://codeforces.com/problemset/problem/1037/D
+
+using namespace std;
+int add(int a,int b,int mod){
+    return ((a % mod) + (b % mod) ) % mod;
+}
+int sub(int a,int b,int mod){
+    return ((a % mod) - (b % mod) + mod) % mod;
+}
+int multiply(int a,int b,int mod){
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+void fileIO(void) {
+
+#ifndef ONLINE_JUDGE
+
+    freopen("Input.txt", "r", stdin);
+    freopen("Output.txt", "w", stdout);
+
+#endif
+
+}
+void fastIO(void) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+int n,m;
+vector<int>adj[200006];
+bool vis[200006];
+vector<int>ans;
+vector<int>order(200006),arr(200006);
+void bfs() {
+    queue<int> q;
+    q.push(1);
+    vis[1] = 1;
+    while (!q.empty()) {
+        int u = q.front();
+        ans.push_back(u);
+        vis[u] = 1;
+        q.pop();
+        for (auto e: adj[u]) {
+            if (!vis[e]) {
+                q.push(e);
+            }
+        }
+    }
+}
+bool cmp(int a,int b){
+    return order[a] < order[b];
+}
+void solve() {
+    cin >> n;m=n-1;
+    memset(vis,0,sizeof vis);
+    for(int i =0;i<m;i++){
+        int u,v;cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    for(int i =1;i<=n;i++){
+        cin >> arr[i];
+        order[arr[i]] = i;
+    }
+    for(int i =1;i<=n;i++){
+        sort(adj[i].begin(),adj[i].end(),cmp);
+    }
+    bfs();
+    for(int i = 1;i<=n;i++){
+        if(ans[i-1] != arr[i]){
+            cout << "No\n";
+            return;
+        }
+    }
+    cout << "Yes\n";
+
+}
+
+signed main() {
+    fastIO();//1 2 2 3 3 3
+    fileIO();
+    solve();
+    return 0;
+}
